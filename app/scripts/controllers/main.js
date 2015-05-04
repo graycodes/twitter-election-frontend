@@ -12,19 +12,8 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
 
         $scope.election1Config = {
 
-            options: {
-                tooltip: {
-                    style: {
-                        padding: 10,
-                        fontWeight: 'bold'
-                    }
-                }
-            },
-
-            loading: 'Loading pls wait',
-
             title: {
-                text: 'Election Mentions'
+                text: 'Party Mentions on Twitter Over Time'
             },
 
             loading: false,
@@ -54,7 +43,7 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
                 var sorted = _.sortByAll(partyData, ['_id.year', '_id.month', '_id.day', '_id.hour']);
                 
                 var data = _.map(sorted, function (item) {
-                    return [Date.UTC(item._id.year, item._id.month, item._id.day, item._id.hour), item.count];
+                    return [Date.UTC(item._id.year, item._id.month - 1, item._id.day, item._id.hour + 1), item.count];
                 });
 
                 return {
