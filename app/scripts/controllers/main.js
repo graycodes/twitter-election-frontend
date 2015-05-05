@@ -18,7 +18,6 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
 
             loading: false,
 
-
             xAxis: {
                 type: 'datetime',
                 dateTimeLabelFormats: {
@@ -34,6 +33,17 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
         $http.get('http://gmacg.me.uk/election/data').then(function (response) {
             var rawData = response.data;
 
+            var partyColorMap = {
+                tusc: '#ED0282',
+                'lib dem': '#FCCB05',
+                snp: '#fff58c',
+                plaid: '#40832C',
+                green: '#3CB921',
+                conservative: '#0E4B98',
+                ukip: '#6E2C8A',
+                labour: '#E41B13'
+            };
+
             var parties = _.uniq(_.pluck(rawData, '_id.party'));
 
             var data = _.map(parties, function (party) {
@@ -46,9 +56,12 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
                     return [Date.UTC(item._id.year, item._id.month - 1, item._id.day, item._id.hour + 1), item.count];
                 });
 
+                var color = partyColorMap[party];
+
                 return {
                     name: party,
-                    data: data
+                    data: data,
+                    color: color
                 };
             });
             $scope.election1Config.series = data;
