@@ -39,9 +39,9 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
                 snp: '#fff58c',
                 plaid: '#40832C',
                 green: '#3CB921',
-                conservative: '#0E4B98',
-                ukip: '#6E2C8A',
-                labour: '#E41B13'
+                conservative: '#3E7Bb8',
+                ukip: '#7E3C9A',
+                labour: '#EC4B43'
             };
 
             var parties = _.uniq(_.pluck(rawData, '_id.party'));
