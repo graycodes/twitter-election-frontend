@@ -10,6 +10,17 @@
 angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
     .controller('MainCtrl', function ($scope, $http) {
 
+         var partyColorMap = {
+              tusc: '#ED0282',
+              'lib dem': '#FCCB05',
+              snp: '#fff58c',
+              plaid: '#40832C',
+              green: '#3CB921',
+              conservative: '#3E7Bb8',
+              ukip: '#7E3C9A',
+              labour: '#EC4B43'
+         };
+
         $scope.election1Config = {
 
             title: {
@@ -32,21 +43,14 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
 
         $http.get('http://gmacg.me.uk/election/data').then(function (response) {
             var rawData = response.data;
-
-            var partyColorMap = {
-                tusc: '#ED0282',
-                'lib dem': '#FCCB05',
-                snp: '#fff58c',
-                plaid: '#40832C',
-                green: '#3CB921',
-                conservative: '#3E7Bb8',
-                ukip: '#7E3C9A',
-                labour: '#EC4B43'
-            };
-
             var parties = _.uniq(_.pluck(rawData, '_id.party'));
+            var data = transformData(parties, rawData);
 
-            var data = _.map(parties, function (party) {
+            $scope.election1Config.series = data;
+        });
+
+        var transformData = function (parties, rawData) {
+		   return _.map(parties, function (party) {
                 var partyData = _.filter(rawData, function (d) {
                     return d._id.party == party;
                 });
@@ -64,6 +68,5 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
                     color: color
                 };
             });
-            $scope.election1Config.series = data;
-        });
+	   };
     });
