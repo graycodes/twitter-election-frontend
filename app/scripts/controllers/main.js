@@ -43,30 +43,27 @@ angular.module('twitterElectionFrontendApp', ['highcharts-ng'])
 
         $http.get('http://gmacg.me.uk/election/data').then(function (response) {
             var rawData = response.data;
+
             var parties = _.uniq(_.pluck(rawData, '_id.party'));
-            var data = transformData(parties, rawData);
 
-            $scope.election1Config.series = data;
-        });
+            var formatDates = function (item) {
+                return [Date.UTC(item._id.year, item._id.month - 1, item._id.day, item._id.hour + 1), item.count];
+            };
 
-        var transformData = function (parties, rawData) {
-		   return _.map(parties, function (party) {
+            var formatData =  function (party) {
                 var partyData = _.filter(rawData, function (d) {
                     return d._id.party == party;
                 });
-                var sorted = _.sortByAll(partyData, ['_id.year', '_id.month', '_id.day', '_id.hour']);
-                
-                var data = _.map(sorted, function (item) {
-                    return [Date.UTC(item._id.year, item._id.month - 1, item._id.day, item._id.hour + 1), item.count];
-                });
 
-                var color = partyColorMap[party];
+                var sorted = _.sortByAll(partyData, ['_id.year', '_id.month', '_id.day', '_id.hour']);
 
                 return {
                     name: party,
-                    data: data,
-                    color: color
+                    data: _.map(sorted, formatDates),
+                    color: partyColorMap[party]
                 };
-            });
-	   };
+            };
+
+            $scope.election1Config.series = _.map(parties, formatData);;
+        });
     });
